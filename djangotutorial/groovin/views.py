@@ -42,4 +42,7 @@ def index(request):
     return render(request,'index.html',{'posts': all_posts})
 
 def about(request):
-    return render(request,'about.html')    
+    return render(request,'about.html')
+
+def contact(request):
+    return render(request,'contact.html')        
