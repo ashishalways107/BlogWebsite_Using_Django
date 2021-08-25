@@ -59,13 +59,22 @@ https://templatemo.com/tm-551-stand-blog
               <li class="nav-item">
                 <a class="nav-link" href="about.html">About Us</a>
               </li>
+              {% if user.is_authenticated %}
               <li class="nav-item">
-                <a class="nav-link" href="blog.html">Blog Entries</a>
+                <li class="nav-link">Hello, {{user.first_name}}</li>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="post-details.html">Post Details</a>
+                <a class="nav-link" href="accounts/logout">Logout</a>
               </li>
-              <li class="nav-item active">
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="accounts/register">Register</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="accounts/login">Login</a>
+              </li>
+              {% endif%}
+              <li class="nav-item">
                 <a class="nav-link" href="contact.html">Contact Us</a>
               </li>
             </ul>
