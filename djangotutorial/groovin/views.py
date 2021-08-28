@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from .models import posts
+from django.contrib.auth.models import User
+from addComments.models import addingComments
 # Create your views here.
 
 def index(request):
@@ -39,13 +41,27 @@ def index(request):
     # all_posts=[post1,post2,post3,post4]
 
     all_posts=posts.objects.all()
-    return render(request,'index.html',{'posts': all_posts})
+    dict_list=[]
+    for post in all_posts:
+        cnt=addingComments.objects.filter(postId_id=post.id).count()
+        dict_list.append({'comments':cnt,'all_post':post})
+    return render(request,'index.html',{'posts_info':dict_list })
 
 def about(request):
+    userss=User.objects.get(id=1)
+    print(userss.email)
     return render(request,'about.html')
 
 def contact(request):
     return render(request,'contact.html') 
 
-def postdetails(request):
-    return render(request,'post-details.html')            
+def postdetails(request,id):
+    post_obj=posts.objects.get(id=id)
+    all_comments=addingComments.objects.filter(postId_id=id)
+    res=[]
+    for comments in all_comments:
+        user_pk=comments.userId_id
+        user=User.objects.get(id=user_pk)
+        dict={'first_name':user.first_name,'last_name':user.last_name,'comm':comments}
+        res.append(dict)
+    return render(request,'post-details.html',{'post_obj':post_obj,'comment_obj':res})            

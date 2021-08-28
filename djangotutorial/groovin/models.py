@@ -7,6 +7,8 @@ class posts(models.Model):
     desc = models.TextField()
     user = models.CharField(max_length=50)
     date = models.DateField()
-    comments = models.IntegerField()
     img = models.ImageField(upload_to='pics')
+
+    def __str__(self):
+        return self.title
 
