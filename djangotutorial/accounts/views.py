@@ -1,37 +1,30 @@
+from django import forms
 from django.core.checks import messages
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User,auth
 from django.contrib import messages
+from . import forms
 # Create your views here.
+
 def register(request):
-
     if request.method=='POST':
-        first_name=request.POST['first_name']
-        last_name=request.POST['last_name']
-        username=request.POST["username"]
-        password1=request.POST['password1']
-        password2=request.POST['password2']
-        email=request.POST['email']
-
-        if password1==password2:
-            if User.objects.filter(username=username).exists():
-                messages.info(request,'Username Taken')
-                return redirect('register')
-            elif User.objects.filter(email=email).exists():
-                messages.info(request,'Email Taken')
-                return redirect('register') 
-            else:
-                user=User.objects.create_user(username=username,password=password1,email=email,first_name=first_name,last_name=last_name)
-                user.save()
-                messages.info(request,'User Created')
-                return redirect('login')
+        form=forms.FormName(request.POST)
+        if form.is_valid():
+            first_name=form.cleaned_data['first_name']
+            last_name=form.cleaned_data['last_name']
+            username=form.cleaned_data["username"]
+            password1=form.cleaned_data['password']
+            email=form.cleaned_data['email']
+            user=User.objects.create_user(username=username,password=password1,email=email,first_name=first_name,last_name=last_name)
+            user.save()
+            messages.info(request,'User Created')
+            return redirect('login')
         else:
-            messages.info(request,"Password not matching.....")
-            return redirect('register')
-        
-        return redirect('/')
+            messages.info(request,form.errors)
+            return redirect('register')     
     else:
-        return render(request,'register.html')
+        form=forms.FormName()
+        return render(request,'register.html',{'form':form})
 
 def login(request):
     if request.method == 'POST':
