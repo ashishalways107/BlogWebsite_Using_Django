@@ -21,5 +21,5 @@ def comment(request,id):
         dict={'first_name':user.first_name,'last_name':user.last_name,'comm':comments}
         res.append(dict)
     # return render(request,'/',{'comment_obj':res})
-    return redirect('/')
+    return redirect('/about')
     

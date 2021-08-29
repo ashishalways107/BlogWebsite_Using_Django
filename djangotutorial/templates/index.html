@@ -106,6 +106,9 @@ https://templatemo.com/tm-551-stand-blog
                   <li><a href="#">{{post.all_post.user}}</a></li>
                   <li><a href="#">{{post.all_post.date}}</a></li>
                   <li><a href="#">{{post.comments}} Comments</a></li>
+                  {% if user.is_superuser %}
+                  <li><a href="{% url 'delete' post.all_post.id%}">Delete</a></li>
+                  {% endif %}
                 </ul>
               </div>
             </div>
