@@ -3,6 +3,7 @@ from .models import posts
 from django.contrib.auth.models import User
 from datetime import date
 from addComments.models import addingComments
+from django.http import HttpResponseNotFound
 # Create your views here.
 
 def index(request):
@@ -22,25 +23,31 @@ def contact(request):
     return render(request,'contact.html') 
 
 def postdetails(request,id):
-    post_obj=posts.objects.get(id=id)
-    if request.method=="POST":
-        message=request.POST['message']
-        newComment=addingComments(comment=message,time=date.today())
-        newComment.postId=post_obj
-        newComment.userId=User.objects.get(id=request.user.id)
-        newComment.save()
-    
-    all_comments=addingComments.objects.filter(postId_id=id)
-    res=[]
-    for comments in all_comments:
-        user_pk=comments.userId_id
-        user=User.objects.get(id=user_pk)
-        dict={'first_name':user.first_name,'last_name':user.last_name,'comm':comments}
-        res.append(dict)
-            
-    cnt=addingComments.objects.filter(postId_id=id).count()
+    if(request.user.is_authenticated):
+        post_obj=posts.objects.get(id=id)
+        if request.method=="POST":
+            message=request.POST['message']
+            newComment=addingComments(comment=message,time=date.today())
+            newComment.postId=post_obj
+            newComment.userId=User.objects.get(id=request.user.id)
+            newComment.save()
+        
+        all_comments=addingComments.objects.filter(postId_id=id)
+        res=[]
+        for comments in all_comments:
+            user_pk=comments.userId_id
+            user=User.objects.get(id=user_pk)
+            dict={'first_name':user.first_name,'last_name':user.last_name,'comm':comments}
+            res.append(dict)
+                
+        cnt=addingComments.objects.filter(postId_id=id).count()
 
-    return render(request,'post-details.html',{'post_obj':post_obj,'comment_obj':res,'comments':cnt})            
+        return render(request,'post-details.html',{'post_obj':post_obj,'comment_obj':res,'comments':cnt})            
+    else:
+        # return HttpResponseNotFound("hello")
+        response = render(request, '404.html',)
+        response.status_code = 404
+        return response
 
 def delete(request,id):
     posts.objects.filter(id=id).delete()
